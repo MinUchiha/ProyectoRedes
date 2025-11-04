@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Manual Interactivo - Proyecto de Redes</title>
+  <style>
+    /* ====== RESET/SIMPLE ====== */
+    :root{
+      --bg:#0f1724;
+      --card:#0b1220;
+      --accent:#0ea5e9;
+      --muted:#94a3b8;
+      --glass: rgba(255,255,255,0.03);
+      --panel: #071025;
+      --radius:12px;
+      --gap:14px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+      background: linear-gradient(180deg,#061026 0%, #081428 60%);
+      color:#e6eef6;
+      display:flex;
+      gap:var(--gap);
+      min-height:100vh;
+      padding:18px;
+    }
+
+    /* ====== SIDEBAR ====== */
+    .sidebar{
+      width:300px;
+      background:linear-gradient(180deg,var(--panel), #021321);
+      border-radius:var(--radius);
+      padding:18px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.6);
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      flex-shrink:0;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+    .logo{
+      width:48px;height:48px;border-radius:10px;
+      background:linear-gradient(135deg,var(--accent), #0284c7);
+      display:flex;align-items:center;justify-content:center;font-weight:700;color:#022;
+      box-shadow:0 4px 12px rgba(0,0,0,0.4);
+    }
+    .title{font-size:1.05rem;font-weight:600}
+    .subtitle{font-size:0.85rem;color:var(--muted)}
+
+    /* ====== MENU (Índice) ====== */
+    .menu{
+      margin-top:6px;
+      overflow:auto;
+      padding-right:6px;
+    }
+    .menu button{
+      width:100%;
+      text-align:left;
+      background:transparent;
+      border:none;
+      color:inherit;
+      padding:10px;
+      border-radius:10px;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      transition: background .18s, transform .12s;
+    }
+    .menu button:hover{ background:rgba(255,255,255,0.02); transform: translateX(4px); }
+    .menu .small{font-size:0.85rem;color:var(--muted)}
+
+    /* ====== MAIN CONTENT ====== */
+    .main{
+      flex:1;
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+      min-width:0;
+    }
+    header.top{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+    }
+    .header-left{
+      display:flex;flex-direction:column;
+    }
+    h1{margin:0;font-size:1.4rem;color:var(--accent)}
+    p.lead{margin:0;color:var(--muted)}
+
+    /* ====== PANEL DE PÁGINA ====== */
+    .content{
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:var(--radius);
+      padding:22px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.55);
+      overflow:auto;
+    }
+
+    /* ====== SECCIONES ====== */
+    .capitulo{
+      border-left: 3px solid rgba(14,165,233,0.12);
+      padding:14px;
+      margin-bottom:16px;
+      border-radius:10px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);
+    }
+    .capitulo h2{
+      margin:0 0 8px 0;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      font-size:1.05rem;
+    }
+    .meta{font-size:0.85rem;color:var(--muted)}
+    .subsecciones{margin-top:10px;display:grid;gap:10px}
+
+    /* subsección individual (expandible) */
+    .sub{
+      background:var(--glass);
+      padding:12px;
+      border-radius:10px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .sub .head{
+      display:flex;justify-content:space-between;align-items:center;
+      gap:10px;
+    }
+    .sub h3{margin:0;font-size:0.98rem}
+    .sub p{margin:0;color:var(--muted);font-size:0.95rem}
+    .sub .body{ display:none; padding-top:6px; border-top:1px dashed rgba(255,255,255,0.03); margin-top:6px; gap:8px; }
+    .sub.expanded .body{ display:block }
+
+    /* imagen/diagrama */
+    .img-placeholder{
+      min-height:140px;border-radius:8px;
+      background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      display:flex;align-items:center;justify-content:center;color:var(--muted);
+      border:1px dashed rgba(255,255,255,0.03);
+      padding:8px;
+    }
+    .notes{font-size:0.85rem;color:var(--muted)}
+
+    /* FOOTER pequeño */
+    footer.pagefoot{ text-align:center;color:var(--muted); font-size:0.85rem; padding:8px 0; }
+
+    /* BOTONES UTILES */
+    .controls{display:flex;gap:8px}
+    .btn{
+      background:transparent;color:var(--accent);border:1px solid rgba(14,165,233,0.14);
+      padding:8px 10px;border-radius:8px;cursor:pointer;font-weight:600;
+    }
+    .btn.ghost{ color:var(--muted); border-color: rgba(255,255,255,0.03) }
+
+    /* RESPONSIVO */
+    @media (max-width:900px){
+      body{flex-direction:column;padding:12px}
+      .sidebar{width:100%;display:flex;flex-direction:row;overflow:auto;padding:12px}
+      .menu{display:flex;gap:6px}
+      .menu button{white-space:nowrap;padding:8px}
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== SIDEBAR (ÍNDICE) ===== -->
+  <aside class="sidebar" aria-label="Índice">
+    <div class="brand">
+      <div class="logo"><img src="/img/Imagen10.png" width="100%" height="100%"></div>
+      <div>
+        <div class="title">Manual de Redes</div>
+        <div class="subtitle">Índice interactivo</div>
+      </div>
+    </div>
+
+    <div class="menu" id="menu">
+      <!-- Botones del índice: al hacer clic, se desplaza a la sección -->
+      <button data-target="estaciones"><strong>1. Estaciones de trabajo</strong><div class="small">Definición, plataformas y ejemplo</div></button>
+      <button data-target="medios"><strong>2. Medios de transmisión</strong><div class="small">Guiados y no guiados</div></button>
+      <button data-target="adaptadores"><strong>3. Adaptadores de red (NIC)</strong><div class="small">Ethernet, Token Ring, FDDI</div></button>
+      <button data-target="dispositivos"><strong>4. Dispositivos de conectividad</strong><div class="small">Repetidores, Switch, Routers, etc.</div></button>
+      <button data-target="servidores"><strong>5. Servidores</strong><div class="small">Tipos y ejemplos</div></button>
+      <button data-target="sistemas"><strong>6. Sistemas Operativos de Red</strong><div class="small">Comparación</div></button>
+    </div>
+
+    <div style="margin-top:auto;display:flex;gap:8px;align-items:center;">
+      <button class="btn" id="expandAll">Expandir todo</button>
+      <button class="btn ghost" id="collapseAll">Colapsar todo</button>
+    </div>
+  </aside>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="main">
+    <header class="top">
+      <div class="header-left">
+        <h1>Manual Interactivo — Proyecto de Redes</h1>
+        <p class="lead">Guía estructurada con contenido y espacios para imágenes/diagramas. Usa los controles para navegar.</p>
+      </div>
+      <div class="controls">
+        <button class="btn" onclick="window.print()">Imprimir</button>
+        <button class="btn ghost" onclick="toggleTheme()">Tema claro/oscuro</button>
+      </div>
+    </header>
+
+    <section class="content" id="documento">
+      <!-- 1. Estaciones de trabajo -->
+      <article id="estaciones" class="capitulo" tabindex="0">
+        <h2>1. Estaciones de trabajo <span class="meta">Concepto y ejemplos</span></h2>
+
+        <div class="subsecciones">
+          <!-- 2.1 Definición y función -->
+          <div class="sub" id="est-1">
+            <div class="head">
+              <h3>2.1 Definición y función</h3>
+              <button class="btn ghost toggle" aria-expanded="false">Abrir</button>
+            </div>
+            <div class="body">
+              <p>Una estación de trabajo es una computadora de alto rendimiento utilizada por profesionales en tareas que requieren gran capacidad de procesamiento, como diseño, modelado, programación o análisis de datos. A diferencia de una PC común, está optimizada para operaciones intensivas y puede formar parte de una red empresarial.
+Su función principal es proporcionar potencia de cómputo y fiabilidad en entornos técnicos, garantizando que el usuario pueda ejecutar programas avanzados, almacenar información de forma segura y conectarse con otros equipos dentro de una red local (LAN).
+</p>
+              <div class="img-placeholder">
+                <!-- AQUÍ: Inserta imagen/diagrama de una estación de trabajo conectada -->
+                <img src="img/Imagen1.png" alt="Estación de trabajo (opcional)">
+              </div>
+            </div>
+          </div>
+
+          <!-- 2.1.1 Plataformas -->
+          <div class="sub" id="est-2">
+            <div class="head">
+              <h3>2.1.1 Plataformas: Windows, Linux, macOS</h3>
+              <button class="btn ghost toggle" aria-expanded="false">Abrir</button>
+            </div>
+            <div class="body">
+              <p><!-- AQUÍ: Explica las diferencias, uso en redes, ventajas/limitaciones de cada plataforma. --> </p>
+              <ul class="notes">
+                <li>Windows:	Amplia compatibilidad con software y hardware.	<br>Ventajas: Interfaz amigable, soporte técnico amplio.	<br>Desventajas:Susceptible a virus, requiere licencia.	<br>Ejemplos: Oficinas administrativas y diseño gráfico.</li><br>
+                <li>Linux:	Sistema de código abierto y altamente personalizable.	<br>Ventajas: Gratuito, estable y seguro.	<br>Desventajas: Menor compatibilidad con programas comerciales.	<br>Ejemplos: Servidores y desarrollo de software.</li><br>
+                <li>MacOS:	Sistema exclusivo de Apple para estaciones creativas.	<br>Ventajas: Excelente rendimiento gráfico y diseño estable.	<br>Desventajas: Costo elevado y poca personalización.	<br>Ejemplos: Producción audiovisual y diseño profesional.</li><br>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Ejemplo: cómo se conecta una estación a la red -->
+          <div class="sub" id="est-3">
+            <div class="head">
+              <h3>Ejemplo: cómo se conecta una estación a la red</h3>
+              <button class="btn ghost toggle" aria-expanded="false">Abrir</button>
+            </div>
+            <div class="body">
+              <p>Las estaciones de trabajo se conectan mediante cable Ethernet o Wi-Fi al switch o router principal. Cada estación recibe una dirección IP, lo que permite el acceso a recursos compartidos como servidores, impresoras o carpetas de red. En entornos empresariales, suelen utilizar autenticación de usuario.
+Ejemplo: En un laboratorio de cómputo, cada estación se conecta al servidor central para almacenar los trabajos de los alumnos.
+</p>
+              <div class="img-placeholder">
+                <!-- AQUÍ: Diagrama de cableado/puerto ethernet, ejemplo de conexión -->
+                <img src="img/Imagen2.png" alt="Estación de trabajo (opcional)">
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 2. Medios de transmisión -->
+      <article id="medios" class="capitulo">
+        <h2>2. Medios de transmisión <span class="meta">Guiados y no guiados</span></h2>
+
+        <div class="subsecciones">
+          <div class="sub" id="med-1">
+            <div class="head">
+              <h3>2.2 Concepto general</h3>
+              <button class="btn ghost toggle" aria-expanded="false">Abrir</button>
+            </div>
+            <div class="body">
+              <p>Un medio de transmisión es el canal por donde viajan las señales de información entre un emisor y un receptor. En otras palabras, es el soporte físico o el espacio que permite que los datos se comuniquen entre dos dispositivos. Existen dos tipos: guiados (cuando las señales viajan por un conductor físico) y no guiados (cuando se transmiten por el aire o el espacio).
+En ambos casos, la información se propaga mediante ondas electromagnéticas, pero con una gran diferencia: los medios guiados “dirigen” esas ondas por un camino físico, mientras que los no guiados simplemente las dejan propagarse libremente.
+</p>
+            </div>
+          </div>
+
+          <div class="sub" id="med-2">
+            <div class="head">
+              <h3>2.2.1 Medios guiados: cable coaxial, par trenzado, fibra óptica</h3>
+              <button class="btn ghost toggle" aria-expanded="false">Abrir</button>
+            </div>
+            <div class="body">
+              <p>Medios guiados
+
+En los medios guiados, las señales viajan por cables o conductores. Los más comunes son:
+
+Par trenzado: Formado por pares de hilos de cobre aislados y entrelazados. Este diseño reduce la interferencia entre cables cercanos. Se usa mucho en redes locales y telefonía por su bajo costo y fácil instalación. Puede transmitir varios megabits por segundo a distancias de varios kilómetros.
+
+</p>
+              <div class="img-placeholder">
+                <!-- AQUÍ: Imagen comparativa de cables (coaxial, UTP/STP, fibra) -->
+                <img src="img/Imagen3.png" alt="Estación de trabajo (opcional)">
+              </div>
+              <p>Cable coaxial: Tiene un conductor interno de cobre rodeado por un aislante, una malla metálica y una capa protectora. Esto le da gran capacidad y resistencia al ruido. Puede alcanzar decenas de Mbps en distancias de hasta un kilómetro. Se utiliza en televisión por cable y redes de datos.
+</p>
+              <div class="img-placeholder">
+                <!-- AQUÍ: Imagen comparativa de cables (coaxial, UTP/STP, fibra) -->
+                <img src="img/Imagen4.png" alt="Estación de trabajo (opcional)">
+              </div>
+                            <p>Fibra óptica: Transmite información como pulsos de luz a través de un fino hilo de vidrio o plástico. Su interior está diseñado para reflejar la luz y llevarla eficientemente al receptor. Es inmune a interferencias y alcanza velocidades de varios Gbps, por lo que se usa en redes troncales y de larga distancia.
+</p>
+              <div class="img-placeholder">
+                <!-- AQUÍ: Imagen comparativa de cables (coaxial, UTP/STP, fibra) -->
+                <img src="img/Imagen5.png" alt="Estación de trabajo (opcional)">
+              </div>
+            </div>
+        
+            </div>
+          </div>
+
+          <div class="sub" id="med-3">
+            <div class="head">
+              <h3>2.2.2 Medios no guiados: RF, microondas, infrarrojo, satélite</h3>
+              <button class="btn ghost toggle" aria-expanded="false">Abrir</button>
+            </div>
+            <div class="body">
+              <p>Los medios no guiados utilizan el espacio libre para transmitir señales, generalmente mediante antenas o emisores de luz. Según la frecuencia de las ondas, se clasifican en:
+<br>
+<br>Radiofrecuencia: Utiliza ondas en las bandas VHF y UHF, que pueden cubrir decenas de kilómetros. Se emplea en radio, televisión y comunicaciones militares.
+
+
+<br>
+
+<br>Microondas: Trabajan entre 1 y 10 GHz. Son muy direccionales y requieren línea de vista entre transmisor y receptor. Se usan en enlaces punto a punto y comunicaciones satelitales.
+<br>
+<br>Infrarrojo y luz láser: Usan luz en línea directa y de corto alcance, como en controles remotos o enlaces ópticos dentro de edificios.
+<br>
+<br>Satélites: Funcionan como repetidores en órbita. Reciben señales desde la Tierra y las retransmiten a otras regiones, permitiendo comunicaciones globales.
+<br>
+</p>
+              <div class="img-placeholder">
+                <!-- AQUÍ: Diagrama de enlace inalámbrico o antenas -->
+                <img src="img/Imagen6.png" alt="Estación de trabajo (opcional)">
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 3. Adaptadores de red (NIC) -->
+      <article id="adaptadores" class="capitulo">
+        <h2>3. Adaptadores de red (NIC) <span class="meta">Función y tipos</span></h2>
+
+        <div class="subsecciones">
+          <div class="sub" id="nic-1">
+            <div class="head">
+              <h3>2.3 Función del adaptador de red</h3>
+              <button class="btn ghost toggle" aria-expanded="false">Abrir</button>
+            </div>
+            <div class="body">
+              <p>El adaptador de red es el dispositivo que permite la comunicación entre una computadora y una red. Su función principal es convertir los datos del equipo en señales que puedan transmitirse a través del medio físico, ya sea por cable o de forma inalámbrica, facilitando la conexión a internet o a una red local.</p>
+            </div>
+          </div>
+
+          <div class="sub" id="nic-2">
+            <div class="head">
+              <h3>2.3.1 Ethernet: características y velocidad</h3>
+              <button class="btn ghost toggle" aria-expanded="false">Abrir</button>
+            </div>
+            <div class="body">
+              <p>Ethernet es la tecnología de red más utilizada en la actualidad. Se caracteriza por su alta velocidad, confiabilidad y facilidad de implementación. Las versiones modernas de Ethernet pueden alcanzar velocidades desde 100 Mbps hasta 10 Gbps o más, dependiendo del tipo de cableado y equipo utilizado.</p>
+            </div>
+          </div>
+
+          <div class="sub" id="nic-3">
+            <div class="head">
+              <h3>2.3.2 Token Ring: concepto y uso histórico</h3>
+              <button class="btn ghost toggle" aria-expanded="false">Abrir</button>
+            </div>
+            <div class="body">
+              <p>Token Ring fue una tecnología de red desarrollada por IBM que utilizaba un “token” o pase digital para controlar el acceso a la red. Cada dispositivo debía esperar su turno para transmitir datos, evitando colisiones. Aunque fue popular en los años 80 y 90, actualmente ha sido reemplazada por Ethernet debido a su mayor velocidad y menor costo.</p>
+            </div>
+          </div>
+
+          <div class="sub" id="nic-4">
+            <div class="head">
+              <h3>2.3.3 FDDI: ventajas y desventajas</h3>
+              <button class="btn ghost toggle" aria-expanded="false">Abrir</button>
+            </div>
+            <div class="body">
+              <p>FDDI (Fiber Distributed Data Interface) es una tecnología de red basada en fibra óptica que ofrecía altas velocidades de transmisión y gran fiabilidad gracias a su estructura en anillo doble. Sin embargo, su alto costo y complejidad hicieron que fuera reemplazada por tecnologías más económicas y eficientes, como Ethernet.</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 4. Dispositivos de conectividad -->
+      <article id="dispositivos" class="capitulo">
+        <h2>4. Dispositivos de conectividad <span class="meta">Repetidores, Switch, Routers, etc.</span></h2>
+
+        <div class="subsecciones">
+          <div class="sub" id="disp-1">
+            <div class="head">
+              <h3>2.4.1 Repetidores: función y uso</h3>
+              <button class="btn ghost toggle" aria-expanded="false">Abrir</button>
+            </div>
+            <div class="body">
+              <p>Los repetidores se utilizan para amplificar y regenerar señales en una red, permitiendo que los datos viajen a mayores distancias sin pérdida de calidad. Son útiles en redes extensas donde la señal se debilita a lo largo del cableado.</p>
+            </div>
+          </div>
+
+          <div class="sub" id="disp-2">
+            <div class="head">
+              <h3>2.4.2 Concentradores (Hub, MAU)</h3>
+              <button class="btn ghost toggle" aria-expanded="false">Abrir</button>
+            </div>
+            <div class="body">
+              <p>Los concentradores o hubs son dispositivos que conectan varios equipos dentro de una red local. Distribuyen los datos a todos los puertos conectados, sin distinguir el destino, lo que puede generar tráfico innecesario. En redes Token Ring, el dispositivo equivalente es el MAU (Multistation Access Unit).</p>
+            </div>
+          </div>
+
+          <div class="sub" id="disp-3">
+            <div class="head">
+              <h3>2.4.3 Transceptores: función y tipo</h3>
+              <button class="btn ghost toggle" aria-expanded="false">Abrir</button>
+            </div>
+            <div class="body">
+              <p>Un transceptor combina las funciones de transmisor y receptor en un mismo dispositivo. Se encarga de enviar y recibir señales a través del medio físico de red. Existen transceptores para diferentes tipos de conexión, como Ethernet, fibra óptica o inalámbrica.</p>
+            </div>
+          </div>
+
+          <div class="sub" id="disp-4">
+            <div class="head">
+              <h3>2.4.4 Puentes (Bridges)</h3>
+              <button class="btn ghost toggle" aria-expanded="false">Abrir</button>
+            </div>
+            <div class="body">
+              <p>Los puentes se encargan de conectar y filtrar el tráfico entre dos segmentos de red, operando en la capa de enlace de datos. Su función es mejorar la eficiencia al reducir colisiones y dirigir los datos solo hacia el segmento correspondiente.</p>
+            </div>
+          </div>
+
+          <div class="sub" id="disp-5">
+            <div class="head">
+              <h3>2.4.5 Conmutadores (Switch)</h3>
+              <button class="btn ghost toggle" aria-expanded="false">Abrir</button>
+            </div>
+            <div class="body">
+              <p>Los conmutadores o switches son dispositivos que conectan varios equipos dentro de una red local, pero a diferencia de los hubs, envían los datos solo al dispositivo de destino. Esto mejora la velocidad, seguridad y eficiencia de la red.</p>
+            </div>
+          </div>
+
+          <div class="sub" id="disp-6">
+            <div class="head">
+              <h3>2.4.6 Gateways: función de traducción entre redes</h3>
+              <button class="btn ghost toggle" aria-expanded="false">Abrir</button>
+            </div>
+            <div class="body">
+              <p>Los gateways actúan como traductores entre redes que utilizan diferentes protocolos o arquitecturas. Permiten la comunicación entre sistemas distintos, como una red local y una red basada en internet, adaptando los datos para que puedan entenderse mutuamente.</p>
+            </div>
+          </div>
+
+          <div class="sub" id="disp-7">
+            <div class="head">
+              <h3>2.4.7 Routers: cómo dirigen el tráfico de red</h3>
+              <button class="btn ghost toggle" aria-expanded="false">Abrir</button>
+            </div>
+            <div class="body">
+              <p>Los routers son dispositivos que analizan las direcciones IP de los paquetes de datos para decidir la mejor ruta hacia su destino. Se utilizan para conectar distintas redes, como una red doméstica con internet, garantizando que la información llegue al lugar correcto de forma eficiente.</p>
+              <div class="img-placeholder">
+                <!-- AQUÍ: Diagrama de interconexión usando routers -->
+                <img src="img/Imagen7.png" alt="Estación de trabajo (opcional)">
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 5. Servidores -->
+      <article id="servidores" class="capitulo">
+        <h2>5. Servidores <span class="meta">Tipos y ejemplos reales</span></h2>
+
+        <div class="subsecciones">
+          <div class="sub" id="srv-1">
+            <div class="head">
+              <h3>2.5 Definición y función general</h3>
+              <button class="btn ghost toggle" aria-expanded="false">Abrir</button>
+            </div>
+            <div class="body">
+              <p>Un servidor es un sistema (hardware y software) dedicado a ofrecer recursos, servicios o datos a otros equipos (clientes) en una red. Funciona en un modelo cliente-servidor: el servidor atiende peticiones de los clientes y responde proporcionándoles acceso a archivos, aplicaciones, impresoras, sitios web, etc. En la práctica, puede ser cualquier computadora o proceso que comparta recursos con uno o más clientes. El servidor centraliza funciones: por ejemplo, permite compartir datos e impresoras, gestionar la seguridad y usuarios, y alojar aplicaciones. Suelen ejecutarse en máquinas dedicadas que garantizan mayor desempeño y fiabilidad.
+
+Los servidores facilitan la administración de la red y de recursos. Por ejemplo, un mismo equipo puede hacer de servidor de archivos, de impresión y de aplicaciones, permitiendo que múltiples usuarios accedan simultáneamente. Esto mejora la eficiencia (no cada estación de trabajo necesita software o hardware local) y la seguridad (los datos se guardan centralmente). En resumen, la función general de un servidor es servir a los clientes: almacenar, procesar y distribuir información bajo demanda.
+<br>Ejemplos: Microsoft Windows Server es la plataforma empresarial de Microsoft para servidores, que permite ejecutar y proteger aplicaciones y servicios en entornos locales o en la nube. Entre las distribuciones Linux más usadas como servidor están Ubuntu Server y Red Hat Enterprise Linux.</p>
+            </div>
+          </div>
+
+          <div class="sub" id="srv-2">
+            <div class="head">
+              <h3>2.5.1 De archivos e impresión</h3>
+              <button class="btn ghost toggle" aria-expanded="false">Abrir</button>
+            </div>
+            <div class="body">
+              <p>Los servidores de archivos proporcionan almacenamiento centralizado de documentos, carpetas y otros datos. Almacenan grandes volúmenes de información en discos locales o en RAID y permiten a los clientes leer/escribir sobre esos recursos compartidos. Facilitan copias de seguridad (backups) centralizadas y control de acceso a datos. Por ejemplo, un servidor Windows con roles de “File and Storage Services” o un servidor Linux con Samba actúa como repositorio común para los usuarios. Paessler destaca que estos servidores gestionan el acceso concurrente a los archivos, ofreciendo protecciones y servicios de backup.
+
+<br>Los servidores de impresión gestionan colas de impresión y permisos. Conectan múltiples impresoras a la red y reciben trabajos de varios clientes, optimizando el flujo de impresión. Centralizan la administración de impresoras (instalación, drivers, cuotas). En lugar de instalar impresoras en cada PC, los clientes envían trabajos al servidor, que los despacha a la impresora correspondiente. Esto ahorra recursos (no es necesario software de impresión en cada equipo) y simplifica la gestión de las impresoras de la empresa.
+</p>
+            </div>
+          </div>
+
+          <div class="sub" id="srv-3">
+            <div class="head">
+              <h3>2.5.2 Administradores de cuentas de usuario</h3>
+              <button class="btn ghost toggle" aria-expanded="false">Abrir</button>
+            </div>
+            <div class="body">
+              <p>Los servidores de cuentas (o directorio/identidad) gestionan la autenticación y autorización de usuarios en la red. En estos servidores se almacenan las credenciales (usuarios, contraseñas) y políticas de seguridad. Un ejemplo típico es Active Directory en entornos Windows: actúa como servidor LDAP centralizado, proporcionando autenticación centralizada, autorizaciones y directivas de grupo para usuarios y equipos. En Linux, servicios equivalentes serían LDAP, Kerberos o FreeIPA. La ventaja es que los usuarios inician sesión en cualquier equipo de la red usando las mismas credenciales, mientras que el servidor de directorio verifica su identidad y define sus permisos. De este modo se garantiza control de acceso uniforme y se simplifica la gestión de perfiles de usuario.</p>
+            </div>
+          </div>
+
+          <div class="sub" id="srv-4">
+            <div class="head">
+              <h3>2.5.3 De aplicación</h3>
+              <button class="btn ghost toggle" aria-expanded="false">Abrir</button>
+            </div>
+            <div class="body">
+              <p>
+Un servidor de aplicaciones se encarga de ejecutar programas de software corporativo para los clientes. A diferencia de ejecutar una aplicación localmente en cada PC, el servidor de aplicaciones la ejecuta centralmente y envía solo los resultados al usuario. Esto es útil para aplicaciones de alto consumo de recursos o con datos críticos, como sistemas ERP o CRM. Por ejemplo, un servidor con una aplicación empresarial (instalada sólo en el servidor) permite a cientos de usuarios utilizarla simultáneamente, reduciendo la carga en los clientes. Paessler indica que los servidores de aplicaciones ejecutan software intensivo, permitiendo que clientes sencillos (tontos) usen la aplicación remotamente. Así se ahorra recursos en las estaciones de trabajo y se simplifica el despliegue (no hace falta instalar la aplicación en cada PC, solo en el servidor).
+</p>
+            </div>
+          </div>
+
+          <div class="sub" id="srv-5">
+            <div class="head">
+              <h3>2.5.4 Servidores de Internet</h3>
+              <button class="btn ghost toggle" aria-expanded="false">Abrir</button>
+            </div>
+            <div class="body">
+              <p>Los servidores de Internet son equipos especializados en servicios de red (web, correo, DNS, etc.). Un caso habitual son los servidores web, que alojan sitios y aplicaciones accesibles vía HTTP. Por ejemplo, Apache, IIS o Nginx instalados en un servidor responden a las peticiones de los navegadores de los usuarios. Al recibir una solicitud de página, el servidor web envía el contenido correspondiente (páginas HTML, imágenes, etc.) de regreso al cliente. De manera similar, otros servidores de Internet alojan servicios como correo electrónico o bases de datos accesibles globalmente. Paessler menciona que los servidores web son de los más abundantes actualmente.
+
+En general, cualquier servidor conectado a Internet que provee servicios (p.ej. Windows Server con IIS o un servidor Linux con Apache/Nginx) entra en esta categoría. Además de web, existen servidores DNS, de juego, de correo electrónico, etc., que facilitan los servicios de red a una escala global.
+
+Ejemplos reales: Microsoft Windows Server (p.ej. Windows Server 2022) y distribuciones Linux dedicadas (como Ubuntu Server o Red Hat Enterprise Linux) son plataformas ampliamente usadas para implementar todo tipo de servidores (archivos, web, bases de datos, directorio, etc.). Estos sistemas operativos ofrecen herramientas y servicios integrados para configurar cada tipo de servidor según las necesidades de la organización.
+</p>
+           
+                <center><img src="img/Imagen8.png" alt="Estación de trabajo (opcional)">
+                </center>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 6. Sistemas Operativos de Red -->
+      <article id="sistemas" class="capitulo">
+        <h2>6. Sistemas Operativos de Red <span class="meta">Concepto y comparación</span></h2>
+
+        <div class="subsecciones">
+          <div class="sub" id="so-1">
+            <div class="head">
+              <h3>Concepto general</h3>
+              <button class="btn ghost toggle" aria-expanded="false">Abrir</button>
+            </div>
+            <div class="body">
+              <p>Un Sistema Operativo de Red (SON) es un software que permite administrar y coordinar los recursos, usuarios, servicios y datos dentro de una red de computadoras. Facilita la comunicación entre equipos, el acceso compartido a archivos e impresoras y la seguridad en el manejo de información.</p>
+            </div>
+          </div>
+
+          <div class="sub" id="so-2">
+            <div class="head">
+              <h3>Ejemplos: Windows Server, Ubuntu Server, Novell NetWare</h3>
+              <button class="btn ghost toggle" aria-expanded="false">Abrir</button>
+            </div>
+            <div class="body">
+              <p>1. Windows Server <br>
+Definición:
+Es un sistema operativo desarrollado por Microsoft diseñado para administrar redes empresariales, servidores y servicios como bases de datos, correo electrónico o impresión.
+<br>Ejemplo práctico:
+En una escuela, Windows Server gestiona las cuentas de usuario de docentes y alumnos, permitiendo el control de acceso y el almacenamiento compartido de materiales.
+<br>
+<br>2. Linux (Ubuntu Server) <br>
+Definición:
+Es una versión del sistema operativo Linux orientada a servidores. Es de código abierto, altamente personalizable, segura y estable, ideal para redes corporativas o servicios web.
+<br>Ejemplo práctico:
+Una empresa de desarrollo web utiliza Ubuntu Server para alojar sus sitios web y servicios en línea de forma segura y económica.
+<br>
+<br>
+3. Novell NetWare <br>
+Definición:
+Fue uno de los primeros sistemas operativos de red diseñados para compartir archivos e impresoras en entornos empresariales. Aunque actualmente está en desuso, sentó las bases de la administración de redes modernas.
+<br>Ejemplo práctico:
+En los años 90, muchas oficinas usaban NetWare para permitir que varios empleados accedieran simultáneamente a documentos y recursos compartidos desde sus computadoras.
+<br></p>
+            </div>
+          </div>
+
+          <div class="sub" id="so-3">
+            <div class="head">
+              <h3>Comparación de características</h3>
+              <button class="btn ghost toggle" aria-expanded="false">Abrir</button>
+            </div>
+            <div class="body">
+              <p>Tabla comparativa:</p>
+              <div class="img-placeholder">
+                <img src="img/Imagen9.png" alt="Estación de trabajo (opcional)">
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <footer class="pagefoot">© 2025 — Proyecto de Redes • Manual Interactivo</footer>
+    </section>
+  </main>
+
+  <script>
+    // Navegación desde sidebar
+    document.querySelectorAll('#menu button').forEach(btn=>{
+      btn.addEventListener('click', e=>{
+        const id = btn.dataset.target;
+        const el = document.getElementById(id);
+        if(el){
+          el.scrollIntoView({behavior:'smooth', block:'start'});
+          // marcar sección: abrir primero subsub si existe
+          const firstToggle = el.querySelector('.toggle');
+          if(firstToggle && firstToggle.getAttribute('aria-expanded') === 'false'){
+            firstToggle.click();
+          }
+        }
+      });
+    });
+
+    // Toggle subsecciones
+    document.querySelectorAll('.toggle').forEach(t=>{
+      t.addEventListener('click', e=>{
+        const sub = t.closest('.sub');
+        const expanded = sub.classList.toggle('expanded');
+        t.textContent = expanded ? 'Cerrar' : 'Abrir';
+        t.setAttribute('aria-expanded', expanded);
+      });
+    });
+
+    // Expandir/Colapsar todo
+    document.getElementById('expandAll').addEventListener('click', ()=>{
+      document.querySelectorAll('.sub').forEach(s=>{
+        s.classList.add('expanded');
+        const btn = s.querySelector('.toggle');
+        if(btn){ btn.textContent='Cerrar'; btn.setAttribute('aria-expanded','true') }
+      });
+    });
+    document.getElementById('collapseAll').addEventListener('click', ()=>{
+      document.querySelectorAll('.sub').forEach(s=>{
+        s.classList.remove('expanded');
+        const btn = s.querySelector('.toggle');
+        if(btn){ btn.textContent='Abrir'; btn.setAttribute('aria-expanded','false') }
+      });
+    });
+
+    // Tema toggle simple (usa inversión ligera)
+    function toggleTheme(){
+      document.documentElement.classList.toggle('lightmode');
+      if(document.documentElement.classList.contains('lightmode')){
+        document.body.style.background = 'linear-gradient(180deg,#f3f9ff, #e6f0fb)';
+        document.body.style.color = '#0b1724';
+      } else {
+        document.body.style.background = 'linear-gradient(180deg,#061026 0%, #081428 60%)';
+        document.body.style.color = '#e6eef6';
+      }
+    }
+    window.toggleTheme = toggleTheme; // exponer global
+
+    // Accesibilidad: abrir la primera subsección del primer capítulo por defecto
+    document.addEventListener('DOMContentLoaded', ()=>{
+      const first = document.querySelector('.capitulo .sub .toggle');
+      if(first) first.click();
+    });
+  </script>
+
+</body>
+</html>
